@@ -401,9 +401,6 @@ export default function MinecraftMarket3D({
                   <p className="text-[7.5px] font-black text-amber-900 uppercase tracking-wider leading-none">
                     {role === 'pembeli' ? "TAG PENULISAN BARANG:" : "MEMINTA DISERAHKAN:"}
                   </p>
-                  <p className="text-xl font-bold font-aksara-display text-amber-955 my-0.5 animate-pulse select-none">
-                    {currentOrder.itemRequested.javaneseScript}
-                  </p>
                   <p className="text-[8.5px] text-stone-600 italic font-bold">"{currentOrder.itemRequested.name}"</p>
                   {/* Bubble Pointer Arrow */}
                   <div className="absolute bottom-[-8px] left-[50%] transform translate-x-[-50%] w-0 h-0 border-t-[8px] border-t-[#5c4037] border-x-[8px] border-x-transparent" />

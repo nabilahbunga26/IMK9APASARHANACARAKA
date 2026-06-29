@@ -4,12 +4,19 @@
  */
 
 import { auth } from "./firebase";
-import { signInWithPopup, GoogleAuthProvider, OAuthProvider } from "firebase/auth";
+import { signInWithPopup, GoogleAuthProvider, OAuthProvider, sendPasswordResetEmail } from "firebase/auth";
 
 export interface SocialAuthResult {
   token: string;
   user: any;
   progress: any;
+}
+
+/**
+ * Triggers Firebase password reset email.
+ */
+export async function resetUserPassword(email: string): Promise<void> {
+  await sendPasswordResetEmail(auth, email);
 }
 
 /**
@@ -20,10 +27,6 @@ export function getFriendlyAuthErrorMessage(err: any): string {
   
   const code = err.code || "";
   const msg = err.message || String(err);
-  
-  if (code === "auth/operation-not-allowed" || msg.includes("operation-not-allowed")) {
-    return "Layanan masuk ini belum diaktifkan di Firebase Console Anda.\n\nLangkah Mengatasi:\n1. Buka Firebase Console proyek Anda.\n2. Masuk ke menu Build > Authentication > Sign-in method.\n3. Tambahkan / aktifkan penyedia (seperti Google atau Apple) di panel tersebut.";
-  }
   
   if (
     code === "auth/popup-closed-by-user" || 
@@ -40,6 +43,14 @@ export function getFriendlyAuthErrorMessage(err: any): string {
   
   if (code === "auth/network-request-failed" || msg.includes("network-request-failed")) {
     return "Koneksi jaringan gagal. Harap periksa koneksi internet Anda atau matikan VPN/Ad-Blocker yang mungkin memblokir komunikasi dengan Firebase.";
+  }
+
+  if (code === "auth/user-not-found") {
+    return "Email tidak terdaftar.";
+  }
+  
+  if (code === "auth/invalid-email") {
+    return "Format email tidak valid.";
   }
 
   return msg;

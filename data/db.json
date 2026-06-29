@@ -1,5 +1,60 @@
 {
-  "users": {},
-  "progress": {},
-  "sessions": {}
+  "users": {
+    "nabilahappwebdev@gmail.com": {
+      "uid": "5c9be3fe-900c-46aa-b118-0d95ccd86542",
+      "name": "Nabilah Developer",
+      "email": "nabilahappwebdev@gmail.com",
+      "passwordHash": "42932486c033b170b73f054d5211dad00ea87e35963472b7f15bb31d57d687f0",
+      "role": "player",
+      "createdAt": "2026-06-23T07:46:10.424Z"
+    },
+    "nabilah@gmail.com": {
+      "uid": "9ecc157e-4bd5-4485-928a-8bfb080ba740",
+      "name": "Nabilah",
+      "email": "nabilah@gmail.com",
+      "passwordHash": "42932486c033b170b73f054d5211dad00ea87e35963472b7f15bb31d57d687f0",
+      "role": "player",
+      "createdAt": "2026-06-23T07:50:58.369Z"
+    }
+  },
+  "progress": {
+    "5c9be3fe-900c-46aa-b118-0d95ccd86542": {
+      "uid": "5c9be3fe-900c-46aa-b118-0d95ccd86542",
+      "coins": 350,
+      "level": 1,
+      "xp": 0,
+      "title": "Caliye (Pemula)",
+      "unlockedStalls": [
+        "kelontong"
+      ],
+      "completedCount": 0,
+      "lastUpdated": "2026-06-23T07:46:10.424Z"
+    },
+    "9ecc157e-4bd5-4485-928a-8bfb080ba740": {
+      "uid": "9ecc157e-4bd5-4485-928a-8bfb080ba740",
+      "coins": 350,
+      "level": 1,
+      "xp": 0,
+      "title": "Caliye (Pemula)",
+      "unlockedStalls": [
+        "kelontong"
+      ],
+      "completedCount": 0,
+      "lastUpdated": "2026-06-23T07:50:58.369Z"
+    }
+  },
+  "sessions": {
+    "0fb7fb3306c40d3be3b0badd354b1515873c3e4184f66c8905591cd3d9c75ce3": {
+      "uid": "5c9be3fe-900c-46aa-b118-0d95ccd86542",
+      "expiresAt": 1782805570424
+    },
+    "5b2dcdcec0b23ce82c365209ffbd9e087d331feb350d2a3428896563009ce7f7": {
+      "uid": "9ecc157e-4bd5-4485-928a-8bfb080ba740",
+      "expiresAt": 1782805858369
+    },
+    "121aaa950a4c405631d2d0a6ae95188ad9aef4ac4ffcc5c3bfa4ea7d373a8ccd": {
+      "uid": "9ecc157e-4bd5-4485-928a-8bfb080ba740",
+      "expiresAt": 1782805869468
+    }
+  }
 }

@@ -5,7 +5,7 @@
 
 import React, { useState } from "react";
 import { motion } from "motion/react";
-import { authenticateWithGoogle, authenticateWithApple, getFriendlyAuthErrorMessage } from "../utils/firebaseAuthHelper";
+import { authenticateWithGoogle, authenticateWithApple, getFriendlyAuthErrorMessage, resetUserPassword } from "../utils/firebaseAuthHelper";
 
 interface LoginPageProps {
   onLoginSuccess: (token: string, user: any, progress: any) => void;
@@ -17,6 +17,7 @@ export default function LoginPage({ onLoginSuccess, onGoToSignUp, onTryGuest }: 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -28,6 +29,7 @@ export default function LoginPage({ onLoginSuccess, onGoToSignUp, onTryGuest }: 
 
     setLoading(true);
     setError(null);
+    setSuccess(null);
 
     try {
       const res = await fetch("/api/auth/login", {
@@ -44,6 +46,28 @@ export default function LoginPage({ onLoginSuccess, onGoToSignUp, onTryGuest }: 
       onLoginSuccess(data.token, data.user, data.progress);
     } catch (err: any) {
       setError(err.message || "Email atau kata sandi Anda keliru.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handlePasswordReset = async () => {
+    console.log("Password reset button clicked!");
+    const emailToReset = email;
+    if (!emailToReset) {
+      setError("Harap masukkan email di kolom email terlebih dahulu untuk mereset kata sandi.");
+      return;
+    }
+
+    setLoading(true);
+    setError(null);
+    setSuccess(null);
+
+    try {
+      await resetUserPassword(emailToReset);
+      setSuccess("Email reset kata sandi telah dikirim!");
+    } catch (err: any) {
+      setError(getFriendlyAuthErrorMessage(err));
     } finally {
       setLoading(false);
     }
@@ -119,6 +143,17 @@ export default function LoginPage({ onLoginSuccess, onGoToSignUp, onTryGuest }: 
           </motion.div>
         )}
 
+        {success && (
+          <motion.div 
+            initial={{ opacity: 0, y: -5 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="bg-green-50 text-[#186a22] text-xs font-semibold p-3.5 rounded-xl border border-green-200 flex items-start gap-2 shadow-inner"
+          >
+            <span className="material-symbols-outlined text-sm shrink-0">check_circle</span>
+            <span className="whitespace-pre-line text-left leading-relaxed">{success}</span>
+          </motion.div>
+        )}
+
         {/* Form */}
         <form onSubmit={handleSubmit} className="flex flex-col gap-4 w-full">
           <div className="flex flex-col gap-1.5">
@@ -138,9 +173,12 @@ export default function LoginPage({ onLoginSuccess, onGoToSignUp, onTryGuest }: 
           </div>
 
           <div className="flex flex-col gap-1.5">
-            <label className="font-semibold text-xs text-[#58423c]" htmlFor="password">
-              Kata Sandi
-            </label>
+            <div className="flex justify-between items-center">
+              <label className="font-semibold text-xs text-[#58423c]" htmlFor="password">
+                Kata Sandi
+              </label>
+              <button type="button" onClick={handlePasswordReset} className="text-xs text-[#a33818] hover:underline relative z-20">Lupa Password?</button>
+            </div>
             <input 
               className="w-full bg-white text-[#1e1c00] border border-[#8b716a] rounded-xl px-4 py-3 shadow-inner focus:ring-2 focus:ring-[#a33818] focus:border-[#a33818] outline-none transition-all placeholder:text-[#dfc0b8]/60 text-sm" 
               id="password" 
@@ -202,14 +240,17 @@ export default function LoginPage({ onLoginSuccess, onGoToSignUp, onTryGuest }: 
 
         {/* Footer */}
         <div className="mt-4 flex justify-center flex-col items-center gap-4 text-center">
-          <button 
-            type="button"
-            onClick={onTryGuest}
-            id="try-guest-btn"
-            className="font-bold text-sm text-[#a33818] hover:text-[#c44f2e] underline underline-offset-4 decoration-2 decoration-[#a33818]/30 hover:decoration-[#a33818] transition-colors cursor-pointer"
-          >
-            Coba Tanpa Akun (Mode Tamu)
-          </button>
+          <div className="flex flex-col items-center">
+            <button 
+              type="button"
+              onClick={onTryGuest}
+              id="try-guest-btn"
+              className="font-bold text-sm text-[#a33818] hover:text-[#c44f2e] underline underline-offset-4 decoration-2 decoration-[#a33818]/30 hover:decoration-[#a33818] transition-colors cursor-pointer"
+            >
+              Coba Tanpa Akun (Mode Tamu)
+            </button>
+            <p className="text-[10px] text-[#58423c] mt-2 italic">Catatan: Progres tidak akan tersimpan tanpa akun</p>
+          </div>
 
           <button 
             type="button"

@@ -537,6 +537,8 @@ export default function MarketGame({ user, initialProgress, token, onLogout, sel
 
   // Upgrades Titles based on XP / Levels
   const checkLevelUp = (currentXp: number, currentLvl: number) => {
+    if (!user) return; // Guest users do not level up
+
     const xpNeeded = currentLvl * 100;
     let nextLvl = currentLvl;
     let nextXp = currentXp;
@@ -733,8 +735,10 @@ export default function MarketGame({ user, initialProgress, token, onLogout, sel
     if (!currentOrder) return;
 
     if (isCorrect) {
+      //const rewardCoins = currentOrder.bonusCoins;
       const rewardCoins = currentOrder.bonusCoins;
-      const rewardXp = 20 + level * 5;
+      // XP only for logged in users
+      const rewardXp = user ? 20 + level * 5 : 0;
       const nextCoins = coins + rewardCoins;
       const nextXp = xp + rewardXp;
       const nextCompleted = completedCount + 1;
@@ -1857,25 +1861,6 @@ export default function MarketGame({ user, initialProgress, token, onLogout, sel
               <span className="font-bold text-[#a33818] text-base md:text-lg select-none">{coins} <span className="text-xs font-semibold">Keper</span></span>
             </div>
 
-            {onSwitchRole && (
-              <button 
-                onClick={onSwitchRole}
-                className="px-2.5 py-1.5 text-xs text-[#a33818] hover:text-[#c44f2e] border border-[#a33818]/40 hover:border-[#a33818] font-bold rounded-lg transition-all flex items-center gap-1 cursor-pointer bg-white"
-              >
-                <span>Ubah Peran</span>
-                <span className="material-symbols-outlined text-xs">switch_account</span>
-              </button>
-            )}
-
-            {/* Settings Button */}
-            <button 
-              onClick={() => setIsSettingsOpen(true)}
-              className="px-2.5 py-1.5 text-xs text-[#a33818] hover:text-[#c44f2e] border border-[#a33818]/40 hover:border-[#a33818] font-bold rounded-lg transition-all flex items-center gap-1 cursor-pointer bg-white"
-              title="Pengaturan Game"
-            >
-              <span>Pengaturan</span>
-              <span className="material-symbols-outlined text-xs">settings</span>
-            </button>
 
             {/* Logout Buttons */}
             <button 
@@ -1907,39 +1892,6 @@ export default function MarketGame({ user, initialProgress, token, onLogout, sel
               className="flex flex-col gap-5 h-full"
             >
               
-              {/* Stall Selections */}
-              <div className="bg-[#fbf5c1]/90 rounded-2xl p-3 border border-[#dfc0b8] flex flex-wrap gap-2 items-center justify-between shadow-sm">
-                <span className="text-xs font-bold text-[#58423c] uppercase flex items-center gap-1">
-                  <span className="material-symbols-outlined text-sm">home_work</span>
-                  Lapak Jualan Anda:
-                </span>
-                <div className="flex gap-1.5">
-                  <button 
-                    onClick={() => setCurrentStall('kelontong')}
-                    className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-1 ${currentStall === 'kelontong' ? 'bg-[#a33818] text-white shadow-sm' : 'bg-white hover:bg-neutral-50 text-amber-900'}`}
-                  >
-                    🛒 Sembako Kelontong
-                  </button>
-                  <button 
-                    onClick={() => {
-                      if (unlockedStalls.includes('jamu')) setCurrentStall('jamu');
-                      else alert("Silakan menyewa lapak Jamu terlebih dahulu di tab 'Upgrade Lapak'!");
-                    }}
-                    className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-1 ${!unlockedStalls.includes('jamu') ? 'opacity-50 line-through' : ''} ${currentStall === 'jamu' ? 'bg-[#186a22] text-white shadow-sm' : 'bg-white hover:bg-neutral-50 text-amber-900'}`}
-                  >
-                    🌿 Jamu Tradisional
-                  </button>
-                  <button 
-                    onClick={() => {
-                      if (unlockedStalls.includes('buah')) setCurrentStall('buah');
-                      else alert("Silakan menyewa lapak Buah & Sayur terlebih dahulu di tab 'Upgrade Lapak'!");
-                    }}
-                    className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-1 ${!unlockedStalls.includes('buah') ? 'opacity-50 line-through' : ''} ${currentStall === 'buah' ? 'bg-[#c44f2e] text-white shadow-sm' : 'bg-white hover:bg-neutral-50 text-amber-900'}`}
-                  >
-                    🍌 Lapak Buah-Sayur
-                  </button>
-                </div>
-              </div>
 
               {selectedRole === 'penjual' ? (
                 /* =========================================================
@@ -2020,7 +1972,7 @@ export default function MarketGame({ user, initialProgress, token, onLogout, sel
                               title="Klik untuk mendengar suara lafal"
                             >
                               <span className="material-symbols-outlined text-base text-[#a33818] group-hover:animate-bounce">volume_up</span>
-                              <span className="tracking-wide select-text">{currentOrder.itemRequested.javaneseScript}</span>
+                              <span className="tracking-wide select-text">{currentOrder.itemRequested.name}</span>
                             </button>
                           ) : currentOrder.questionType === 'spell_script' ? (
                             // Spell script challenges: Must hide the answer script, show the Latin word beautifully
@@ -2785,7 +2737,13 @@ export default function MarketGame({ user, initialProgress, token, onLogout, sel
 
         {/* Belajar Tab */}
         <button 
-          onClick={() => setActiveTab('kamus')}
+          onClick={() => {
+            if (isTradingActive) {
+                alert("Mohon selesaikan sesi transaksi Anda terlebih dahulu!");
+            } else {
+                setActiveTab('kamus');
+            }
+          }}
           className={`flex flex-col items-center justify-center rounded-xl px-4 py-1.5 transition-transform w-[72px] cursor-pointer ${
             activeTab === 'kamus' || activeTab === 'latihan'
               ? 'bg-[#c44f2e] text-white shadow-[0_3px_0_0_#862303] active:scale-95 active:translate-y-1'
@@ -2798,7 +2756,13 @@ export default function MarketGame({ user, initialProgress, token, onLogout, sel
 
         {/* Toko Tab */}
         <button 
-          onClick={() => setActiveTab('toko')}
+          onClick={() => {
+            if (isTradingActive) {
+                alert("Mohon selesaikan sesi transaksi Anda terlebih dahulu!");
+            } else {
+                setActiveTab('toko');
+            }
+          }}
           className={`flex flex-col items-center justify-center rounded-xl px-4 py-1.5 transition-transform w-[72px] cursor-pointer ${
             activeTab === 'toko'
               ? 'bg-[#c44f2e] text-white shadow-[0_3px_0_0_#862303] active:scale-95 active:translate-y-1'
@@ -2811,7 +2775,13 @@ export default function MarketGame({ user, initialProgress, token, onLogout, sel
 
         {/* Rapor Tab */}
         <button 
-          onClick={() => setActiveTab('juara')}
+          onClick={() => {
+            if (isTradingActive) {
+                alert("Mohon selesaikan sesi transaksi Anda terlebih dahulu!");
+            } else {
+                setActiveTab('juara');
+            }
+          }}
           className={`flex flex-col items-center justify-center rounded-xl px-4 py-1.5 transition-transform w-[72px] cursor-pointer ${
             activeTab === 'juara'
               ? 'bg-[#c44f2e] text-white shadow-[0_3px_0_0_#862303] active:scale-95 active:translate-y-1'

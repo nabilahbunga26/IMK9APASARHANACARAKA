@@ -8,7 +8,7 @@ import { motion } from "motion/react";
 import { authenticateWithGoogle, authenticateWithApple, getFriendlyAuthErrorMessage } from "../utils/firebaseAuthHelper";
 
 interface RegisterPageProps {
-  onRegisterSuccess: (token: string, user: any, progress: any) => void;
+  onRegisterSuccess: () => void;
   onGoToLogin: () => void;
   onTryGuest: () => void;
 }
@@ -17,13 +17,19 @@ export default function RegisterPage({ onRegisterSuccess, onGoToLogin, onTryGues
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!name || !email || !password) {
-      setError("Semua bidang (Nama, Email, dan Kata Sandi) harus diisi!");
+    if (!name || !email || !password || !confirmPassword) {
+      setError("Semua bidang harus diisi!");
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      setError("Kata sandi tidak cocok!");
       return;
     }
 
@@ -47,7 +53,7 @@ export default function RegisterPage({ onRegisterSuccess, onGoToLogin, onTryGues
         throw new Error(data.error || "Gagal mendaftarkan akun baru.");
       }
 
-      onRegisterSuccess(data.token, data.user, data.progress);
+      onRegisterSuccess();
     } catch (err: any) {
       setError(err.message || "Terdapat kendala koneksi atau akun telah terdaftar.");
     } finally {
@@ -60,7 +66,7 @@ export default function RegisterPage({ onRegisterSuccess, onGoToLogin, onTryGues
     setError(null);
     try {
       const result = await authenticateWithGoogle();
-      onRegisterSuccess(result.token, result.user, result.progress);
+      onRegisterSuccess();
     } catch (err: any) {
       if (err.code !== "auth/popup-closed-by-user" && err.code !== "auth/cancelled-popup-request") {
         console.error("[GOOGLE AUTH ERROR]", err);
@@ -76,7 +82,7 @@ export default function RegisterPage({ onRegisterSuccess, onGoToLogin, onTryGues
     setError(null);
     try {
       const result = await authenticateWithApple();
-      onRegisterSuccess(result.token, result.user, result.progress);
+      onRegisterSuccess();
     } catch (err: any) {
       if (err.code !== "auth/popup-closed-by-user" && err.code !== "auth/cancelled-popup-request") {
         console.error("[APPLE AUTH ERROR]", err);
@@ -170,6 +176,22 @@ export default function RegisterPage({ onRegisterSuccess, onGoToLogin, onTryGues
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              disabled={loading}
+              autoComplete="new-password"
+            />
+          </div>
+
+          <div className="flex flex-col gap-1.5">
+            <label className="font-semibold text-xs text-[#58423c]" htmlFor="confirmPassword">
+              Ulangi Kata Sandi
+            </label>
+            <input 
+              className="w-full bg-white text-[#1e1c00] border border-[#8b716a] rounded-xl px-4 py-3 shadow-inner focus:ring-2 focus:ring-[#a33818] focus:border-[#a33818] outline-none transition-all placeholder:text-[#dfc0b8]/60 text-sm" 
+              id="confirmPassword" 
+              placeholder="Ulangi kata sandi Anda" 
+              type="password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
               disabled={loading}
               autoComplete="new-password"
             />

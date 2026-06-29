@@ -91,12 +91,8 @@ export default function App() {
     setScreen('role-selection');
   };
 
-  const handleRegisterSuccess = (authToken: string, registeredUser: UserProfile, gameProgress: GameProgress) => {
-    localStorage.setItem("hanacaraka_auth_token", authToken);
-    setToken(authToken);
-    setUser(registeredUser);
-    setProgress(gameProgress);
-    setScreen('role-selection');
+  const handleRegisterSuccess = () => {
+    setScreen('login');
   };
 
   const handleTryGuest = () => {
