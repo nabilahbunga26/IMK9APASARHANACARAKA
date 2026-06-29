@@ -1,4 +1,6 @@
-<<<<<<< HEAD
+DOMAIN APLIKASI : https://nabilahbunga26.github.io/IMK9APASARHANACARAKA/
+
+VIDEO : 
 # Pasar Hanacaraka
 
 Pasar Hanacaraka adalah aplikasi permainan edukasi interaktif yang dirancang untuk membantu siswa, guru, dan pengguna umum dalam mempelajari aksara Jawa (Hanacaraka) secara menyenangkan melalui simulasi jual-beli di pasar tradisional.
