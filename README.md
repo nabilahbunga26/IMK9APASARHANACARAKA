@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Pasar Hanacaraka
 
 Pasar Hanacaraka adalah aplikasi permainan edukasi interaktif yang dirancang untuk membantu siswa, guru, dan pengguna umum dalam mempelajari aksara Jawa (Hanacaraka) secara menyenangkan melalui simulasi jual-beli di pasar tradisional.
@@ -81,3 +82,6 @@ Aplikasi ini berjalan dalam lingkungan Node.js. Berikut adalah cara untuk menjal
     ```bash
     npm run build
     ```
+=======
+# IMK9APASARHANACARAKA
+>>>>>>> 600eec0cbc3f2c3b986a07053114c3691e33fc3b
